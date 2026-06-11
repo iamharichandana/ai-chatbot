@@ -202,7 +202,7 @@ Unit tests cover the chat service: session creation, message handling, and the 4
 
 ## Assumptions & Limitations
 
-- **Storage is in-memory.** Conversations are kept in memory and are **lost when the server restarts**. This satisfies the assignment's storage requirement and keeps setup simple. Swapping in SQLite would only require replacing the `ChatStore` implementation, since the rest of the app depends on its interface rather than its internals.
-- **Mock mode** is the default when no API key is set. This makes the project easy to run and grade without an external account, but replies are placeholders rather than real AI output.
-- **No authentication.** Anyone with a `sessionId` can read or post to that session. This is acceptable for the scope of the assignment but would need to be added for production.
-- **No rate limiting or message length caps**, which a production service would require.
+- **Storage is in-memory.** No external database or cloud storage is connected, so chat history is not persisted and may be lost when the application session ends.
+- **Mock mode** Without an API key, the application works in mock mode and generates sample responses rather than real AI responses.
+
+
