@@ -86,7 +86,7 @@ Get a free key from [Google AI Studio](https://aistudio.google.com/apikey), then
 ```
 OPENAI_API_KEY=your_gemini_key
 OPENAI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
-OPENAI_MODEL=gemini-2.0-flash
+OPENAI_MODEL=gemini-3.5-flash
 ```
 
 ### Example: using OpenAI
