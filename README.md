@@ -64,11 +64,6 @@ npm run start:dev
 
 The server starts on `http://localhost:3000`.
 
-### Run with Docker (optional)
-
-```bash
-docker compose up --build
-```
 
 ## Environment Variables
 
@@ -169,7 +164,7 @@ curl http://localhost:3000/api/chat/history/3f9a1c2e-...
       "createdAt": "2025-06-11T10:00:00.000Z"
     },
     {
-      "id": "c3d4-...",
+      "id": "a1b2....",
       "sessionId": "3f9a1c2e-...",
       "role": "assistant",
       "content": "Hello! I'm an AI assistant...",
