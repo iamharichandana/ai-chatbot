@@ -1,98 +1,208 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS AI Chatbot
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A simple AI chatbot backend built with **NestJS** and **TypeScript**. It exposes REST APIs that let a user start a conversation, send messages, and receive AI-generated replies, with full conversation history kept per session.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **Start a session** and get a unique `sessionId`.
+- **Send a message** and receive an AI reply.
+- **Retrieve the full conversation history** for a session.
+- **Context awareness** — the entire conversation is sent to the AI on each request, so replies take earlier messages into account.
+- **Works without an API key** — if no key is configured, the app runs in *mock mode* and returns a placeholder reply, so it can be run and tested without any external setup or cost.
+- **Request validation** — invalid requests return clean `400` errors instead of crashing.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tech Stack
 
-## Project setup
+- **Node.js** (v18+)
+- **NestJS** (controllers, services, modules, dependency injection)
+- **TypeScript**
+- **openai** SDK (also compatible with Google Gemini's OpenAI endpoint)
+- **class-validator** / **class-transformer** for request validation
+- **@nestjs/config** for environment variables
 
-```bash
-$ npm install
+## Project Structure
+
+```
+src/
+  chat/
+    dto/
+      create-message.dto.ts   # validates incoming message requests
+    entities/
+      message.entity.ts       # Message and Session type definitions
+    chat.controller.ts        # HTTP layer (the 3 endpoints)
+    chat.service.ts           # core chat logic
+    chat.store.ts             # in-memory storage
+    ai.service.ts             # talks to the AI model (with mock fallback)
+    chat.module.ts            # wires the feature together
+  app.module.ts
+  main.ts
 ```
 
-## Compile and run the project
+## Setup
+
+### 1. Install dependencies
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+### 2. Configure environment variables
+
+Copy the example file and fill in the values you want:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
+See [Environment Variables](#environment-variables) below. You can leave the key empty to run in mock mode.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 3. Run the app
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The server starts on `http://localhost:3000`.
 
-## Resources
+### Run with Docker (optional)
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+docker compose up --build
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Environment Variables
 
-## Support
+| Variable | Required | Description |
+|---|---|---|
+| `OPENAI_API_KEY` | No | API key for the AI provider. If empty, the app runs in **mock mode** (returns placeholder replies). |
+| `OPENAI_BASE_URL` | No | Custom base URL. Set this to use Google Gemini's OpenAI-compatible endpoint. Leave empty for OpenAI. |
+| `OPENAI_MODEL` | No | Model name. Defaults to `gpt-4o-mini`. Use `gemini-2.0-flash` for Gemini. |
+| `PORT` | No | Port the server listens on. Defaults to `3000`. |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Example: using Google Gemini (free tier)
 
-## Stay in touch
+Get a free key from [Google AI Studio](https://aistudio.google.com/apikey), then set:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+OPENAI_API_KEY=your_gemini_key
+OPENAI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+OPENAI_MODEL=gemini-2.0-flash
+```
 
-## License
+### Example: using OpenAI
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```
+OPENAI_API_KEY=your_openai_key
+OPENAI_MODEL=gpt-4o-mini
+```
+
+(Leave `OPENAI_BASE_URL` empty.)
+
+## API Reference
+
+Base path: `/api/chat`
+
+### 1. Create a session
+
+```
+POST /api/chat/session
+```
+
+**Request**
+```bash
+curl -X POST http://localhost:3000/api/chat/session
+```
+
+**Response** `201`
+```json
+{ "sessionId": "3f9a1c2e-..." }
+```
+
+### 2. Send a message
+
+```
+POST /api/chat/message
+```
+
+**Body**
+| Field | Type | Description |
+|---|---|---|
+| `sessionId` | string | The session ID returned from `/session`. |
+| `message` | string | The user's message. |
+
+**Request**
+```bash
+curl -X POST http://localhost:3000/api/chat/message \
+  -H "Content-Type: application/json" \
+  -d '{"sessionId": "3f9a1c2e-...", "message": "Hello, who are you?"}'
+```
+
+**Response** `201`
+```json
+{
+  "sessionId": "3f9a1c2e-...",
+  "reply": "Hello! I'm an AI assistant. How can I help you today?"
+}
+```
+
+### 3. Get conversation history
+
+```
+GET /api/chat/history/:sessionId
+```
+
+**Request**
+```bash
+curl http://localhost:3000/api/chat/history/3f9a1c2e-...
+```
+
+**Response** `200`
+```json
+{
+  "sessionId": "3f9a1c2e-...",
+  "messages": [
+    {
+      "id": "a1b2-...",
+      "sessionId": "3f9a1c2e-...",
+      "role": "user",
+      "content": "Hello, who are you?",
+      "createdAt": "2025-06-11T10:00:00.000Z"
+    },
+    {
+      "id": "c3d4-...",
+      "sessionId": "3f9a1c2e-...",
+      "role": "assistant",
+      "content": "Hello! I'm an AI assistant...",
+      "createdAt": "2025-06-11T10:00:01.000Z"
+    }
+  ]
+}
+```
+
+### Error responses
+
+| Status | When |
+|---|---|
+| `400 Bad Request` | Missing or invalid fields (e.g. empty `message`), or unexpected fields. |
+| `404 Not Found` | The `sessionId` does not exist. |
+
+Example:
+```bash
+curl http://localhost:3000/api/chat/history/does-not-exist
+# { "statusCode": 404, "message": "Session does-not-exist not found", "error": "Not Found" }
+```
+
+## Testing
+
+```bash
+npm test
+```
+
+Unit tests cover the chat service: session creation, message handling, and the 404 case for unknown sessions. The AI service is mocked in tests so no network calls are made.
+
+## Assumptions & Limitations
+
+- **Storage is in-memory.** Conversations are kept in memory and are **lost when the server restarts**. This satisfies the assignment's storage requirement and keeps setup simple. Swapping in SQLite would only require replacing the `ChatStore` implementation, since the rest of the app depends on its interface rather than its internals.
+- **Mock mode** is the default when no API key is set. This makes the project easy to run and grade without an external account, but replies are placeholders rather than real AI output.
+- **No authentication.** Anyone with a `sessionId` can read or post to that session. This is acceptable for the scope of the assignment but would need to be added for production.
+- **No rate limiting or message length caps**, which a production service would require.
